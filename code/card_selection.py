@@ -5,6 +5,21 @@ import numpy as np
 from statsmodels.tsa.stattools import adfuller
 from IPython.display import Image
 
+def synthesize_names(card):
+    """_summary_
+
+    Args:
+        card (pd.DataFrame.apply):
+            Used to apply on cards to replace their
+            own self-referenced names with CARDNAME.
+            Use axis=1.
+
+    Returns:
+        str:
+            Filtered oracle texts with CARDNAME in them
+    """    
+    return card['oracle_text'].replace(card['name'],'CARDNAME').split('\n')
+
 def card_sampler(
     card_data,n_cards=5,card_list=None,
     **kwargs

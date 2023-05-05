@@ -4,6 +4,7 @@ import numpy as np
 
 from statsmodels.tsa.stattools import adfuller
 from IPython.display import Image
+from PIL import Image as Im
 
 def synthesize_names(card):
     """_summary_
@@ -176,7 +177,7 @@ def plot_card_trends(
 def card_imager(
     card_data,n_cards=5,card_list=None,
     print_out=True,img_size='normal',
-    width=None,height=None,
+    width=None,height=None,hplot=True,
     **kwargs
 ):
     """_summary_
@@ -221,7 +222,41 @@ def card_imager(
     **kwargs
     )
     card_images = [card['image_uris']['normal'].split('?')[0] for i, card in sample_cards.iterrows()]
-    if print_out:
+    if (print_out & ~hplot):
         for uri in card_images:
             display(Image(uri,width=width,height=height))
+    # horizontal image plotting from StackOverflow:
+    # https://stackoverflow.com/questions/36006136/how-to-display-images-in-a-row-with-ipython-display 
+    elif(print_out & hplot):
+        fig,ax = plt.subplots(
+            1,len(card_images),
+            figsize=(12,len(card_images)*4)
+            )
+        for i, uri in enumerate(card_images):
+            im_buffer = Image(uri,
+                width=width,height=height
+                ).data
+            np_buffer = np.frombuffer(im_buffer,dtype='byte')
+            bgr = cv2.imdecode(np_buffer,-1)
+            rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
+            ax[i].imshow(rgb)
+            ax[i].axis('off')
+            #Image(uri).data)
+        plt.tight_layout()
     return card_images
+
+import cv2
+# import numpy as np
+
+# f = open('image.jpg', 'rb')
+# image_bytes = f.read()  # b'\xff\xd8\xff\xe0\x00\x10...'
+
+# decoded = cv2.imdecode(np.frombuffer(image_bytes, np.uint8), -1)
+
+# print('OpenCV:\n', decoded)
+
+# # your Pillow code
+# import io
+# from PIL import Image
+# image = np.array(Image.open(io.BytesIO(image_bytes))) 
+# print('PIL:\n', image)

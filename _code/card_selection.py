@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import cv2
 
 from statsmodels.tsa.stattools import adfuller
 from IPython.display import Image
@@ -244,19 +245,3 @@ def card_imager(
             #Image(uri).data)
         plt.tight_layout()
     return card_images
-
-import cv2
-# import numpy as np
-
-# f = open('image.jpg', 'rb')
-# image_bytes = f.read()  # b'\xff\xd8\xff\xe0\x00\x10...'
-
-# decoded = cv2.imdecode(np.frombuffer(image_bytes, np.uint8), -1)
-
-# print('OpenCV:\n', decoded)
-
-# # your Pillow code
-# import io
-# from PIL import Image
-# image = np.array(Image.open(io.BytesIO(image_bytes))) 
-# print('PIL:\n', image)

@@ -19,8 +19,12 @@ def synthesize_names(card):
     Returns:
         str:
             Filtered oracle texts with CARDNAME in them
-    """    
-    return card['oracle_text'].replace(card['name'],'CARDNAME').split('\n')
+    """
+    try:
+        card['oracle_text'].replace(card['name'],'CARDNAME')
+    except:
+        print(card)
+    return card['oracle_text'].replace(card['name'],'CARDNAME')#.split('\n')
 
 def card_sampler(
     card_data,n_cards=5,card_list=None,
@@ -171,7 +175,7 @@ def plot_card_trends(
         label.set(rotation=30)
     for label in ax_[-1][1].get_xticklabels():
         label.set(rotation=30)
-    plt.suptitle("Selection of Foil and Non-Foil Cards\nand Price Trends (USD)")
+    plt.suptitle("Selection of Foil and Non-Foil Cards\nand Price Trends (USD)\n")
     plt.tight_layout()
     return fuller_vals
 

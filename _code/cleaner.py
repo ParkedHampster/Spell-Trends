@@ -58,7 +58,8 @@ def preprocess(
         sw = stopwords.words(lang)
     if tokenizer==None:
         # tokenizer = RegexpTokenizer(r"(\{?\+?[a-zA-Z0-9]+(?:’[a-z0-9]+)?\}?)")
-        tokenizer = RegexpTokenizer(r"(\{?[a-zA-Z]+(?:’[a-z]+)?\}?)|([+-]?\d\/[+-]?\d)|(\{\d\d?\})")
+        # tokenizer = RegexpTokenizer(r"([a-zA-Z]+(?:’[a-z]+)?|[+-]?\d\/[+-]?\d|\{\d\d?\}|\{.\s?.?\})")
+        tokenizer = RegexpTokenizer(r"([a-zA-Z]+(?:’[a-z]+)?|[+-]?\d\/[+-]?\d|\{\d\d?\}|\{.\s?.?\}|\n)|\(.+?\)")
     # make texts lowercase
     texts = [str(phrase).lower() for phrase in texts]
     tokens = [tokenizer.tokenize(str(doc)) for doc in texts]

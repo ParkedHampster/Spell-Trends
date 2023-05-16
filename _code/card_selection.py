@@ -20,6 +20,9 @@ def synthesize_names(card):
         str:
             Filtered oracle texts with CARDNAME in them
     """
+
+    # if card renaming fails, print what card
+    # an error occurred on 
     try:
         card['oracle_text'].replace(card['name'],'CARDNAME')
     except:

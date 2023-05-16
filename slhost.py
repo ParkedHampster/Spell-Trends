@@ -4,4 +4,5 @@ import seaborn as sns
 import numpy as np 
 import joblib 
 
-from PIL import Image 
+from IPython.display import Image
+

@@ -6,3 +6,4 @@ import joblib
 
 from IPython.display import Image
 
+st.title("MtG Price Estimator")

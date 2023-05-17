@@ -57,16 +57,20 @@ def preprocess(
     if sw==None:
         sw = stopwords.words(lang)
     if tokenizer==None:
-        # tokenizer = RegexpTokenizer(r"(\{?\+?[a-zA-Z0-9]+(?:’[a-z0-9]+)?\}?)")
-        # tokenizer = RegexpTokenizer(r"([a-zA-Z]+(?:’[a-z]+)?|[+-]?\d\/[+-]?\d|\{\d\d?\}|\{.\s?.?\})")
+        # tokenizer that excludes reminder text (text
+        # that is in parentheses) but matches all other
+        # text, mana symbols ({c} like this,) and
+        # numbers of several formats (1/0, +1/+1, etc.)
         tokenizer = RegexpTokenizer(r"([a-zA-Z]+(?:’[a-z]+)?|[+-]?\d\/[+-]?\d|\{\d\d?\}|\{.\s?.?\}|\n)|\(.+?\)")
     # make texts lowercase
     texts = [str(phrase).lower() for phrase in texts]
+    # apply tokenization
     tokens = [tokenizer.tokenize(str(doc)) for doc in texts]
     
     clean_texts = []
     for token in tokens:
-        # append an array of tokens to clean_texts if they are not in stop words
+        # append an array of tokens to clean_texts if
+        # they are not in stop words
         nsw = [token_ for token_ in token if token_ not in sw]
         clean_texts.append(nsw)
     lemmer = WordNetLemmatizer()

@@ -136,9 +136,13 @@ def plot_card_trends(
                 x = price_series.index
                 y = price_series.values
                 y1 = np.diff(y)+y[0]
+                try:
+                    _fuller_val = adfuller(y1)[1:]
+                except ValueError():
+                    _fuller_val = None
 
                 fuller_vals[test_card['id']][style] = {
-                        'adfuller':adfuller(y1)[1:],
+                        'adfuller':_fuller_val,
                         'prices':y
                 }
                 
@@ -224,7 +228,9 @@ def card_imager(
         list:
             List of scryfall image uris for use with
             Image()
-    """    
+    """
+    if n_cards > len(card_data):
+        n_cards = len(card_data)
     sample_cards = card_sampler(
     card_data,n_cards=n_cards,card_list=card_list,
     **kwargs

@@ -1,9 +1,33 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import cv2
 
 from statsmodels.tsa.stattools import adfuller
 from IPython.display import Image
+from PIL import Image as Im
+
+def synthesize_names(card):
+    """_summary_
+
+    Args:
+        card (pd.DataFrame.apply):
+            Used to apply on cards to replace their
+            own self-referenced names with CARDNAME.
+            Use axis=1.
+
+    Returns:
+        str:
+            Filtered oracle texts with CARDNAME in them
+    """
+
+    # if card renaming fails, print what card
+    # an error occurred on 
+    try:
+        card['oracle_text'].replace(card['name'],'CARDNAME')
+    except:
+        print(card)
+    return card['oracle_text'].replace(card['name'],'CARDNAME')#.split('\n')
 
 def card_sampler(
     card_data,n_cards=5,card_list=None,
@@ -112,9 +136,13 @@ def plot_card_trends(
                 x = price_series.index
                 y = price_series.values
                 y1 = np.diff(y)+y[0]
+                try:
+                    _fuller_val = adfuller(y1)[1:]
+                except ValueError():
+                    _fuller_val = None
 
                 fuller_vals[test_card['id']][style] = {
-                        'adfuller':adfuller(y1)[1:],
+                        'adfuller':_fuller_val,
                         'prices':y
                 }
                 
@@ -154,14 +182,14 @@ def plot_card_trends(
         label.set(rotation=30)
     for label in ax_[-1][1].get_xticklabels():
         label.set(rotation=30)
-    plt.suptitle("Selection of Foil and Non-Foil Cards\nand Price Trends (USD)")
+    plt.suptitle("Selection of Foil and Non-Foil Cards\nand Price Trends (USD)\n")
     plt.tight_layout()
     return fuller_vals
 
 def card_imager(
     card_data,n_cards=5,card_list=None,
     print_out=True,img_size='normal',
-    width=None,height=None,
+    width=None,height=None,hplot=True,
     **kwargs
 ):
     """_summary_
@@ -200,13 +228,33 @@ def card_imager(
         list:
             List of scryfall image uris for use with
             Image()
-    """    
+    """
+    if n_cards > len(card_data):
+        n_cards = len(card_data)
     sample_cards = card_sampler(
     card_data,n_cards=n_cards,card_list=card_list,
     **kwargs
     )
     card_images = [card['image_uris']['normal'].split('?')[0] for i, card in sample_cards.iterrows()]
-    if print_out:
+    if (print_out & ~hplot):
         for uri in card_images:
             display(Image(uri,width=width,height=height))
+    # horizontal image plotting from StackOverflow:
+    # https://stackoverflow.com/questions/36006136/how-to-display-images-in-a-row-with-ipython-display 
+    elif(print_out & hplot):
+        fig,ax = plt.subplots(
+            1,len(card_images),
+            figsize=(12,len(card_images)*4)
+            )
+        for i, uri in enumerate(card_images):
+            im_buffer = Image(uri,
+                width=width,height=height
+                ).data
+            np_buffer = np.frombuffer(im_buffer,dtype='byte')
+            bgr = cv2.imdecode(np_buffer,-1)
+            rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
+            ax[i].imshow(rgb)
+            ax[i].axis('off')
+            #Image(uri).data)
+        plt.tight_layout()
     return card_images

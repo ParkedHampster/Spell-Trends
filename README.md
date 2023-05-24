@@ -20,3 +20,9 @@ This data is maintained and refreshed on a dail basis,
 looking back at a 90-day period. At the sources
 mentioned, there is not additional data available
 retroactively.
+
+<!-- 
+include the specific time frame that was looked at
+explain that new prices are available
+etc
+ -->

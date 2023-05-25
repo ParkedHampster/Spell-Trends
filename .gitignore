@@ -165,5 +165,5 @@ cython_debug/
 # ignore automatically generated vscode files
 .vscode/
 
-# data files are all massive, igoring for now
-data/
+# data json files are all massive, igoring for now
+data/*.json

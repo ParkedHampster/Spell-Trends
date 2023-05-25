@@ -31,6 +31,7 @@ def synthesize_names(card):
 
 def card_sampler(
     card_data,n_cards=5,card_list=None,
+    random_state=None,
     **kwargs
 ):
     """_summary_
@@ -59,7 +60,9 @@ def card_sampler(
             Image()
     """    
     if card_list==None:
-        sample_cards = card_data.sample(n_cards).reset_index()
+        sample_cards = card_data.sample(
+            n_cards,random_state=random_state
+            ).reset_index()
     else:
         sample_cards = card_data[
             card_data['name'].str.lower().isin(card_list)
@@ -69,6 +72,7 @@ def card_sampler(
 def plot_card_trends(
     card_data,n_cards=5,card_list=None,
     ax=None,ax_width=14,ax_scale=3,
+    random_state=None,
     **kwargs
 ):
     """_summary_
@@ -105,6 +109,7 @@ def plot_card_trends(
         card_data=card_data,
         n_cards=n_cards,
         card_list=card_list,
+        random_state=random_state,
         **kwargs
     )
     if card_list != None:
@@ -138,7 +143,7 @@ def plot_card_trends(
                 y1 = np.diff(y)+y[0]
                 try:
                     _fuller_val = adfuller(y1)[1:]
-                except ValueError():
+                except ValueError:
                     _fuller_val = None
 
                 fuller_vals[test_card['id']][style] = {
@@ -190,6 +195,7 @@ def card_imager(
     card_data,n_cards=5,card_list=None,
     print_out=True,img_size='normal',
     width=None,height=None,hplot=True,
+    random_state=None,
     **kwargs
 ):
     """_summary_
@@ -233,6 +239,7 @@ def card_imager(
         n_cards = len(card_data)
     sample_cards = card_sampler(
     card_data,n_cards=n_cards,card_list=card_list,
+    random_state=random_state,
     **kwargs
     )
     card_images = [card['image_uris']['normal'].split('?')[0] for i, card in sample_cards.iterrows()]

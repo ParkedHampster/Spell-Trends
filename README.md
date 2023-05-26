@@ -29,7 +29,7 @@ Because of the extensive and time-consuming nature of
 the modeling process, all models produced by the
 original data are also provided in the pickles folder.
 
-<!-- BUSINESS UNDERSTANDING -->
+<!-- +BUSINESS UNDERSTANDING -->
 <!-- +Explain Problem -->
 <!--   +Introduction explains value for stakeholder and
         real-word application -->
@@ -65,7 +65,7 @@ An ability to reliably predict and work with pricing
 can allow drastic improvement to informed purchasing
 decisions.
 
-<!-- DATA UNDERSTANDING -->
+<!-- +DATA UNDERSTANDING -->
 <!-- +Describe source and properties + why they're useful -->
 <!--   +Describe Data Source, why it's a good choice -->
 <!--   +Present data set size -->

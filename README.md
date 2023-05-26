@@ -163,18 +163,31 @@ within it.
 <!--    Identify limitations -->
 
 <!-- DATA PREPARATION -->
+<!-- +Show how data was prepared and why -->
+<!--   +Instruct on how to recreate -->
+<!--   +Comments to explain code -->
+<!--   +Provide valid explanations of steps -->
 
 <!-- MODELING -->
+<!-- Demonstrate an iterative approach -->
+<!--   +Run/interprate a dummy model -->
+<!--   -Introduce new models that improve -->
+<!--   -Explicitly justify model change w/
+        results and context -->
+<!--    Explicitly describe improvements -->
 
 <!-- EVALUATION -->
+<!-- Show how well a model solves the problem -->
+<!--    Justify choice of metrics and 
+        consequences -->
+<!--    Identify final model using those
+        metrics -->
+<!--    Discuss the implications -->
 
 <!-- CONCLUSIONS -->
+<!--  -->
+
 <!-- GITHUB REPO -->
 <!--    Conclusion summarizes implications -->
 
-<!-- CODE QUALITY - NOT PART OF README -->
-<!-- 
-include the specific time frame that was looked at
-explain that new prices are available
-etc
- -->
+<!-- +CODE QUALITY - NOT PART OF README -->

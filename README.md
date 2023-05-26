@@ -29,7 +29,7 @@ Because of the extensive and time-consuming nature of
 the modeling process, all models produced by the
 original data are also provided in the pickles folder.
 
-<!-- BUSINESS UNDERSTANDING -->
+<!-- +BUSINESS UNDERSTANDING -->
 <!-- +Explain Problem -->
 <!--   +Introduction explains value for stakeholder and
         real-word application -->
@@ -65,7 +65,7 @@ An ability to reliably predict and work with pricing
 can allow drastic improvement to informed purchasing
 decisions.
 
-<!-- DATA UNDERSTANDING -->
+<!-- +DATA UNDERSTANDING -->
 <!-- +Describe source and properties + why they're useful -->
 <!--   +Describe Data Source, why it's a good choice -->
 <!--   +Present data set size -->
@@ -163,18 +163,31 @@ within it.
 <!--    Identify limitations -->
 
 <!-- DATA PREPARATION -->
+<!-- +Show how data was prepared and why -->
+<!--   +Instruct on how to recreate -->
+<!--   +Comments to explain code -->
+<!--   +Provide valid explanations of steps -->
 
 <!-- MODELING -->
+<!-- Demonstrate an iterative approach -->
+<!--   +Run/interprate a dummy model -->
+<!--   -Introduce new models that improve -->
+<!--   -Explicitly justify model change w/
+        results and context -->
+<!--    Explicitly describe improvements -->
 
 <!-- EVALUATION -->
+<!-- Show how well a model solves the problem -->
+<!--    Justify choice of metrics and 
+        consequences -->
+<!--    Identify final model using those
+        metrics -->
+<!--    Discuss the implications -->
 
 <!-- CONCLUSIONS -->
+<!--  -->
+
 <!-- GITHUB REPO -->
 <!--    Conclusion summarizes implications -->
 
-<!-- CODE QUALITY - NOT PART OF README -->
-<!-- 
-include the specific time frame that was looked at
-explain that new prices are available
-etc
- -->
+<!-- +CODE QUALITY - NOT PART OF README -->

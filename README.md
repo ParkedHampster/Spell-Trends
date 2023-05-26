@@ -4,6 +4,9 @@ A natural language processing analysis of Magic: the
 Gathering abilities as compared to their relative
 prices, foil and non-foil.
 
+![Magic: the Gathering logo](./img/MTG_Primary_LL_2c_Black_LG_V12.png)
+<sup>Trademarked, Wizards of the Coast</sup>
+
 ## Preface
 
 This project takes place over the course of several
@@ -29,11 +32,6 @@ Because of the extensive and time-consuming nature of
 the modeling process, all models produced by the
 original data are also provided in the pickles folder.
 
-<!-- +BUSINESS UNDERSTANDING -->
-<!-- +Explain Problem -->
-<!--   +Introduction explains value for stakeholder and
-        real-word application -->
-<!--   +Identify stakeholders and use -->
 ## Project Scope and Opportunity Potential
 
 This project will be ongoing as new data becomes
@@ -64,13 +62,6 @@ caveats that we'll be making an attempt at detecting.
 An ability to reliably predict and work with pricing
 can allow drastic improvement to informed purchasing
 decisions.
-
-<!-- +DATA UNDERSTANDING -->
-<!-- +Describe source and properties + why they're useful -->
-<!--   +Describe Data Source, why it's a good choice -->
-<!--   +Present data set size -->
-<!--   +Justify feature inclusions -->
-<!--   +Identify limitations -->
 
 ## Data Sources and Authority
 

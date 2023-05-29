@@ -5,7 +5,9 @@ Gathering abilities as compared to their relative
 prices, foil and non-foil.
 
 ![Magic: the Gathering logo](./img/MTG_Primary_LL_2c_Black_LG_V12.png)
-<sup>Trademarked, Wizards of the Coast</sup>
+<sup>Trademarked,
+[Wizards of the Coast](https://magic.wizards.com/)
+</sup>
 
 ## Preface
 

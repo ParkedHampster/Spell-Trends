@@ -310,13 +310,227 @@ upcoming steps.
 
 ![The cards that were used for the trend graphs in the previous image](./img/trend_cards.png)
 
+## Model Preparation
+
+With our data cleaned and pre-processed, we need to
+convert it from generally human-readable data into data
+that can be interpreted by a learning model.
+
+### Processing Abilities
+
+The data provided from Scryfall has our abilities as
+text, which is great for readability - but our model
+needs this data to be vectorized for it to be usable.
+
+Additionally, our cards can have multiple abilities.
+These abilities are denoted by `\n` in the text, which
+means that we are able to actually split from a single
+line of text into several abilities. Once we do that,
+we can then split from our list of abilities into our
+fully vectorized data. This will effectively take our
+abilities, turn them into chunks of data, and then for
+each card in our data it will assign it as either
+having that phrase or not having that phrase.
+Additionally, when we have our abilities split out we
+can assign each card a value of how many abilities it
+has.
+
+### Additional Vectorization
+
+While our abilities make up the largest portion of our
+vectorized data, we also need to vectorize a few other
+pieces of data.
+
+- Color Identity
+  - This can be have 6 total items, with many cards
+  having multiple values.
+
+- Power, Toughness, and Loyalty
+  - While these are all understandable as numbers,
+  there are special values in each of them that can't
+  be treated as numbers in our data set.
+  - Additionally, it's important to note that our model
+  won't be able to interpret "None" as an integer, and
+  we can't convert it into a 0 because there are cards
+  that have 0 as a value, but cards with None as a
+  value outright don't have a power, toughness, or
+  loyalty.
+
+## Data Subsetting
+
+Foil and non-foil prices can vary wildly for each card.
+As well, there are many cards that may have foil prices
+but not non-foil prices - like many promos - and the
+same is true for the other way around - like cards that
+are older than the foiling process.
+
+This means that we'll actually have 2 different models
+predicting the foil and non-foil prices.
+
+## Modeling
+
+To get a solid baseline, we need to create a dummy
+model that will show a no-effort approach to prediction
+so that we can see if our efforts are actually making
+any kind of reasonable progress. To do this, we'll just
+take the median price of cards across each of our data
+subsets and use those to predict the value of any given
+card.
+
+We'll be using root mean squared error as a means of
+measuring the effectiveness of our predictions. This
+will show us the average distance that are predictions
+are from the true values.
+
+| Subset | Prediction | RMSE  |
+| ---:   | :---:      | :---: |
+| Normal | $0.90      | 91.61 |
+| Foil   | $0.22      | 47.28 |
+
 <!-- MODELING -->
 <!-- Demonstrate an iterative approach -->
-<!--   +Run/interprate a dummy model -->
+<!--   +Run/interpret a dummy model -->
 <!--   +Introduce new models that improve -->
 <!--   -Explicitly justify model change w/
         results and context -->
 <!--    -Explicitly describe improvements -->
+
+## Conclusions
+
+As it stands, our model is doing okay overall. A lot of
+predictions are within $1 of the actual prices. It
+looks like a big part of that is because of how many
+cards are low cost in the first place. The model is
+picking up on this and is sticking a lot of predictions
+on the low end - which isn't necessarily a bad thing.
+Having an estimate on the lower end of things is safer
+for people looking to invest in the cards, but low risk
+generally means low reward.
+
+In all cases, our RMSE score is showing some overfit,
+and since our selected model is a Random Forest
+Regressor, this is not very surprising.
+
+Currently, the model is probably at a state where it's
+helpful for gauging cards and prices that sit above
+what may be a lower-price card, but precise and
+accurate prices aren't really in the picture just yet.
+Even with that as a point, there are a decent number of
+predictions that are substantially higher than their
+actual prices, though this is a lot less common on the
+foil data set. This is likely due to the presence of
+things like the reserved list, which consists almost
+entirely of cards that aren't foil, a large chunk of
+which do very little as far as modern game standards
+are concerned, and even more are priced astronomically
+higher than even some of the best cards by today's
+standards.
+
+## Next Steps
+
+While this model doesn't quite meet the needs that were
+originally put forth, there seems to be a real,
+possible task to undertake.
+
+As mentioned at the very beginning of this project,
+there will be more updates as more information comes
+out, however infrequent they may be. With new sets
+coming out with relative frequency, the data will
+constantly be evolving.
+
+Below are some steps that are on the docket for model
+improvement in no particular order.
+
+- **Model Tweaking**
+  - The model is currently overfitting to our data to
+  some degree. There are a lot of different parameters
+  that could be searched across to potentially improve
+  upon this.
+
+- **Different Modeling Methods**
+  - This project primarily looked to try only a handful
+  of modeling methods. Elastic Net, Random Forest, and
+  Gradient Boosting. There exist other options that may
+  be worth looking into and might have impressive
+  results. Even using the same models but with
+  different parameters could produce some promising
+  data.
+
+- **Narrowed Scope**
+  - While many cards were left out and our scope was
+  reduced drastically, things like the reserved list,
+  the sheer amount of commons and uncommons that aren't
+  worth more than pennies, and cards with no abilities
+  may be playing an even more drastic role under the
+  hood than we can even begin to guess. Reducing our
+  training data to look more specifically at the data
+  that is outside of those sets may be worth a shot.
+
+- **Further Subsetting**
+  - Separating the cards out into foil and non-foil was
+  one of the most important parts of the training data
+  processing. It may be of use to take the cards down
+  even further based on different features like card
+  type if possible, though this may only lead to more
+  complexity for no reason.
+
+- **Accounting for Modal or Multi-Cards**
+  - There was an entire subset of cards that had to be
+  ignored in order for our processing to even function.
+  As new sets come out, these cards are going to only
+  become more abundant. Making an exception that takes
+  cards like this into consideration may be a vital
+  part of the process before too long.
+
+- **Create an Uploader/Importer**
+  - It's nice to see the data and how it's laid out
+  now, but it would be extremely useful to be able to
+  import new set data as it becomes available before
+  release to be able to more quickly gauge a set's
+  value. This may be something that can be put off
+  until the model itself is performing with much better
+  predictions, but it is still extremely important that
+  this is done at some point.
+
+## For Inquiries, Business or Otherwise
+
+| Contact Type | Contact Info |
+|---:|:---|
+| GitHub | [github.com/ParkedHampster](github.com/ParkedHampster) |
+| eMail | [jd@jmentz.com](mailto:jd@jmentz.com) |
+
+## Repository Structure
+
+```bash
+Spell Trends
+├── 1_Data_Prep.ipynb
+├── 2_Modeling.ipynb
+├── _code
+│  ├── __init__.py
+│  ├── __pycache__
+│  ├── card_selection.py
+│  ├── cleaner.py
+│  └── viz.py
+├── data
+│  ├── AllPrices.json
+│  ├── AllPrintings.json
+│  ├── ScryfallData.json
+│  └── simplified_cards.parquet
+├── img
+│  ├── MTG_Primary_LL_2c_Black_LG_V12.png
+│  ├── pricing_trends.png
+│  ├── realm_cloaked_giant.jpeg
+│  ├── trend_cards.png
+│  └── who_what_when_where_why.jpeg
+├── LICENSE
+├── pickles
+│  ├── foil_gs.pkl
+│  ├── log_foil_gs.pkl
+│  ├── log_norm_gs.pkl
+│  └── norm_gs.pkl
+├── README.md
+└── Spell Trends Presentation.pdf
+```
 
 <!-- CONCLUSIONS -->
 <!-- EVALUATION -->

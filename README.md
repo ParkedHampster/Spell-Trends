@@ -310,23 +310,10 @@ upcoming steps.
 
 ![The cards that were used for the trend graphs in the previous image](./img/trend_cards.png)
 
-<!-- DATA UNDERSTANDING -->
-<!-- +Describe source and properties + why they're useful -->
-<!--    +Describe Data Source, why it's a good choice -->
-<!--    +Present data set size -->
-<!--    +Justify feature inclusions -->
-<!--    Identify limitations -->
-
-<!-- DATA PREPARATION -->
-<!-- +Show how data was prepared and why -->
-<!--   +Instruct on how to recreate -->
-<!--   +Comments to explain code -->
-<!--   +Provide valid explanations of steps -->
-
 <!-- MODELING -->
 <!-- Demonstrate an iterative approach -->
 <!--   +Run/interprate a dummy model -->
-<!--   -Introduce new models that improve -->
+<!--   +Introduce new models that improve -->
 <!--   -Explicitly justify model change w/
         results and context -->
 <!--    -Explicitly describe improvements -->

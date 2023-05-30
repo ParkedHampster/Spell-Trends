@@ -167,3 +167,6 @@ cython_debug/
 
 # data json files are all massive, igoring for now
 data/*.json
+
+# manually ignored files - for processing backup
+.ignore

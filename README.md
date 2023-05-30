@@ -142,17 +142,54 @@ been consistently buying and trading cards since early
 with people that have made a business of the Magic
 market in all categories of it.
 
-Throughout this project, the features being used will
+## Data Preparation
+
+There are several steps that need to be taken in order
+for this project to be at a point where all of our data
+sets are in the same format and where all of our data
+is able to even be processed.
+
+### The Need to Translate
+
+Data from MtGJson and data from Scryfall are both
+stored differently. Scryfall stores their data in a csv
+format that is structured more like a standard
+database, whereas MtGJson - as the name implies -
+stores their data in a json format.
+
+Additionally, MtGJson and Scryfall have different IDs
+that each card uses.
+
+Fortunately, MtGJson has Scryfall ID as an item for
+each card.
+
+*Un*fortunately, this ID isn't stored with the card
+price data.
+
+In order to put this data together, we need to match
+every UUID from MtGJson with a Scryfall ID, that's what
+the 'AllPrintings' file is for.
+
+While it has a lot of other information, we'll be using
+the much more standardized Scryfall data for that. All
+we need is the UUID and ScryfallID tags and we can
+create a simple translator.
+
+### Pairing Pricing Data
+
+As mentioned
+
+<!-- Throughout this project, the features being used will
 be adapted or changed over the project's course. As
 these features are added or removed, justification will
 be provided either before the relevant code block or
-within it.
+within it. -->
 
 <!-- DATA UNDERSTANDING -->
-<!-- Describe source and properties + why they're useful -->
-<!--    Describe Data Source, why it's a good choice -->
-<!--    Present data set size -->
-<!--    Justify feature inclusions -->
+<!-- +Describe source and properties + why they're useful -->
+<!--    +Describe Data Source, why it's a good choice -->
+<!--    +Present data set size -->
+<!--    +Justify feature inclusions -->
 <!--    Identify limitations -->
 
 <!-- DATA PREPARATION -->
@@ -167,13 +204,13 @@ within it.
 <!--   -Introduce new models that improve -->
 <!--   -Explicitly justify model change w/
         results and context -->
-<!--    Explicitly describe improvements -->
+<!--    -Explicitly describe improvements -->
 
 <!-- EVALUATION -->
-<!-- Show how well a model solves the problem -->
-<!--    Justify choice of metrics and 
+<!-- +Show how well a model solves the problem -->
+<!--    +Justify choice of metrics and 
         consequences -->
-<!--    Identify final model using those
+<!--    +Identify final model using those
         metrics -->
 <!--    Discuss the implications -->
 

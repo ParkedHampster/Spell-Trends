@@ -318,16 +318,14 @@ upcoming steps.
         results and context -->
 <!--    -Explicitly describe improvements -->
 
+<!-- CONCLUSIONS -->
 <!-- EVALUATION -->
 <!-- +Show how well a model solves the problem -->
 <!--    +Justify choice of metrics and 
         consequences -->
 <!--    +Identify final model using those
         metrics -->
-<!--    Discuss the implications -->
-
-<!-- CONCLUSIONS -->
-<!--  -->
+<!--    +Discuss the implications -->
 
 <!-- GITHUB REPO -->
 <!--    Conclusion summarizes implications -->

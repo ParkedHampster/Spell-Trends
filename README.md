@@ -142,17 +142,112 @@ been consistently buying and trading cards since early
 with people that have made a business of the Magic
 market in all categories of it.
 
-Throughout this project, the features being used will
+## Data Preparation
+
+There are several steps that need to be taken in order
+for this project to be at a point where all of our data
+sets are in the same format and where all of our data
+is able to even be processed.
+
+### The Need to Translate
+
+Data from MtGJson and data from Scryfall are both
+stored differently. Scryfall stores their data in a csv
+format that is structured more like a standard
+database, whereas MtGJson - as the name implies -
+stores their data in a json format.
+
+Additionally, MtGJson and Scryfall have different IDs
+that each card uses.
+
+Fortunately, MtGJson has Scryfall ID as an item for
+each card.
+
+*Un*fortunately, this ID isn't stored with the card
+price data.
+
+In order to put this data together, we need to match
+every UUID from MtGJson with a Scryfall ID, that's what
+the 'AllPrintings' file is for.
+
+While it has a lot of other information, we'll be using
+the much more standardized Scryfall data for that. All
+we need is the UUID and ScryfallID tags and we can
+create a simple translator.
+
+### Pairing Pricing Data
+
+As mentioned, our Scryfall Data has prices for exactly
+1 day. Since this makes our data susceptible to random
+spikes, we want to instead use the MtGJSon prices,
+which are maintained through daily rolling updates and
+keep 90 days worth of prices. We can use the median of
+these prices to create our target, and we can insulate
+ourselves further from spikes in data by using the
+market or "retail" prices and only look at the actual
+sales means that took place over that 90-day period.
+
+### Feature Selection
+
+Once we have our pricing data paired together, we can
+start pairing down our data to the information we
+actually care about.
+
+Below is a table outlining each of the features used
+from the Scryfall data set alongside a reason for their
+inclusion.
+
+| Feature Name | Purpose Served |
+| ---: | --- |
+| Release Date | Used to calculate the age of a card. |
+| CMC | The "cost" of a card. This is the sum of all mana symbols. Cards that are harder to cast may be worth lower amounts because of this difficulty. A card that has a high CMC needs to be extra strong to be priced higher. |
+| Type Line | Different card types have different impacts and restrictions on how they work. Sorceries and Creatures that do similar things can be worth vastly different amounts. |
+| Oracle Text | This is the bulk of explaining how a card works. This is used to describe what a card actually *DOES* when it's used. We'll use the oracle text of a card for a large portion of our data. |
+| Power/Toughness | These features only apply to creatures and vehicles. These determine how "strong" a creature is. A big predictor in whether or not a card is usable in Modern, for instance, is whether or not it dies to Lightning Bolt, which is a card that deals 3 damage to any target. |
+| Color Identity | This is an explanation of what "color" a card is. Commander, one of the most popular formats at this time, relies heavily on color identity to determine what decks a card can be played in. |
+| Promo/Reprint | These are special printing indicators of a card. A card that is a promo is usually printed at a lower capacity and a card that is a reprint is just an existing card that is being printed again. Generally, promos have a higher value and reprints have a lower value, they are effectively opposites of each other, but promos are generally reprints in and of themselves. |
+| Full Art/Textless | Just like promos, these are special printings of other cards. Both of these are also generally types of promos. |
+| Number of Abilities | A card that does 1 thing can be good. A card that does 8 things can be great. |
+
+### Special Cases
+
+Because of how we're observing our data, there are a
+few things that were problems when bringing in
+everything.
+
+One prominent issue was the presence of multi-part
+cards.
+
+These cards generally have two separate ways to cast
+them. This can be something like *Realm-Cloaked Giant*,
+which can also be cast as *Cast Off*. In effect, this
+is two completely different cards, just on the same
+piece of cardboard.
+
+![Realm-Cloaked Giant from Magic: the Gathering - trademark Wizards of the Coast](./img/realm_cloaked_giant.jpeg)
+
+While this kind of card has become more common in the
+last few years, There are only about 1,050 of them
+total. There's an even more special case from one of
+the "UN"sets that appears in our data 5 times.
+
+While this card is excluded from our main data because
+it isn't representative of our data set at large, it is
+an interesting card to mention.
+
+![Who What When Where Why from Magic: the Gathering - trademark Wizards of the Coast](./img/who_what_when_where_why.jpeg)
+
+<!-- Throughout this project, the features being used will
 be adapted or changed over the project's course. As
 these features are added or removed, justification will
 be provided either before the relevant code block or
-within it.
+within it. -->
 
 <!-- DATA UNDERSTANDING -->
-<!-- Describe source and properties + why they're useful -->
-<!--    Describe Data Source, why it's a good choice -->
-<!--    Present data set size -->
-<!--    Justify feature inclusions -->
+<!-- +Describe source and properties + why they're useful -->
+<!--    +Describe Data Source, why it's a good choice -->
+<!--    +Present data set size -->
+<!--    +Justify feature inclusions -->
 <!--    Identify limitations -->
 
 <!-- DATA PREPARATION -->
@@ -167,13 +262,13 @@ within it.
 <!--   -Introduce new models that improve -->
 <!--   -Explicitly justify model change w/
         results and context -->
-<!--    Explicitly describe improvements -->
+<!--    -Explicitly describe improvements -->
 
 <!-- EVALUATION -->
-<!-- Show how well a model solves the problem -->
-<!--    Justify choice of metrics and 
+<!-- +Show how well a model solves the problem -->
+<!--    +Justify choice of metrics and 
         consequences -->
-<!--    Identify final model using those
+<!--    +Identify final model using those
         metrics -->
 <!--    Discuss the implications -->
 

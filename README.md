@@ -369,6 +369,8 @@ predicting the foil and non-foil prices.
 
 ## Modeling
 
+### Creating the Dummy Model
+
 To get a solid baseline, we need to create a dummy
 model that will show a no-effort approach to prediction
 so that we can see if our efforts are actually making
@@ -386,6 +388,16 @@ are from the true values.
 | ---:   | :---:      | :---: |
 | Normal | $0.90      | 91.61 |
 | Foil   | $0.22      | 47.28 |
+
+Unsurprisingly, guessing a middle value arbitrarily for
+every single card blindly isn't very effectual.
+
+As long as we're able to beat these values, we can show
+that we've made progress in the right direction.
+
+### Model Methodology, Testing, and Selection
+
+a
 
 <!-- MODELING -->
 <!-- Demonstrate an iterative approach -->

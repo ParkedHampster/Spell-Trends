@@ -606,6 +606,19 @@ improvement in no particular order.
   predictions, but it is still extremely important that
   this is done at some point.
 
+## Other Versions
+
+For a more in-depth look at this project, there are two
+notebooks that include code processes and additional
+references. These notebooks are available
+[here](./1_Data_Prep.ipynb)
+and
+[here](./2_Modeling.ipynb).
+
+For an abbreviated form of this file as a presentation,
+you can find that
+[here](./Spell%20Trends%20Presentation.pdf).
+
 ## For Inquiries, Business or Otherwise
 
 | Contact Type | Contact Info |
@@ -644,17 +657,3 @@ Spell Trends
 ├── README.md
 └── Spell Trends Presentation.pdf
 ```
-
-<!-- CONCLUSIONS -->
-<!-- EVALUATION -->
-<!-- +Show how well a model solves the problem -->
-<!--    +Justify choice of metrics and 
-        consequences -->
-<!--    +Identify final model using those
-        metrics -->
-<!--    +Discuss the implications -->
-
-<!-- GITHUB REPO -->
-<!--    Conclusion summarizes implications -->
-
-<!-- +CODE QUALITY - NOT PART OF README -->

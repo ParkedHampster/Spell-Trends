@@ -237,29 +237,83 @@ an interesting card to mention.
 
 ![Who What When Where Why from Magic: the Gathering - trademark Wizards of the Coast](./img/who_what_when_where_why.jpeg)
 
-<!-- Throughout this project, the features being used will
-be adapted or changed over the project's course. As
-these features are added or removed, justification will
-be provided either before the relevant code block or
-within it. -->
+Because these cards are stored as multiple entries and
+generally stored differently in our Scryfall data than
+any other card, we'll ignore these for now. In theory,
+an exception could be made for these but the time sink
+would far outweigh the benefit at this point.
 
-<!-- DATA UNDERSTANDING -->
-<!-- +Describe source and properties + why they're useful -->
-<!--    +Describe Data Source, why it's a good choice -->
-<!--    +Present data set size -->
-<!--    +Justify feature inclusions -->
-<!--    Identify limitations -->
+### Subset Selection
 
-<!-- DATA PREPARATION -->
-<!-- +Show how data was prepared and why -->
-<!--   +Instruct on how to recreate -->
-<!--   +Comments to explain code -->
-<!--   +Provide valid explanations of steps -->
+Now that we have a good idea of what to account for, we
+need to narrow our scope. This was briefly hinted at
+earlier in the project, but there are a lot of cards
+that exist outside of what TCGPlayer pricing is good at
+capturing or are generally not representative of the
+primary game.
+
+The table below outlines each reduction step, its
+justification, and the resulting number of cards
+remaining in the data set after the step's completion.
+
+| Step | Explanation | Cards Remaining |
+| ---: | --- | :---: |
+| **Before** | ... | **415,580** |
+| **English-Only** | TCGPlayer's prices are primarily geared toward the English-speaking North America market. | 80,033 |
+| **No Oversized** | These are special printings of regular cards that cannot be played in a normal game of Magic | 79,470 |
+| **None of**: Token, Emblem, Scheme, Vanguard | These are also special cards that cannot be played but are not regular cards | 77,435 |
+| **Only Paper** | TCGPlayer does not track MTG:Online prices and the MTGO market is an entirely different market from the paper one. | 69,414 |
+| **No Silver- or Gold-border Cards** | Silver and Gold border cards are cards from either joke sets or collector-only sets that cannot be used in a normal game, even though they are otherwise normal cards. | 67,533 |
+| **Only Cards With a Type** | Some cards in the data have no type listed. All legal, playable cards have card types. | 67,520 |
+| **No CMB1 or CMB2 Cards** | These are cards that were special, playtest cards that were released to the public and never meant to be played in any format. | 67,280 |
+| **No Multi-Cards** | As described before, these cards simply do not work without special processing. | 65,169 |
+| **Only Cards With Prices** | We are training a model to predict prices. Many of the cards that don't have prices are cards that simply haven't made a sale in months. These cards can be either do-nothing cards that are listed at $0.03 or are extremely powerful and unique cards listed at hundreds of thousands of dollars. This discrepancy makes it nigh impossible to impute this data. | 64,250 |
+| **Remove Low-Count "Sets"** | There are several sets that only contain a handful of cards because of the way promos used to be handled. While these cards may be worth looking at in the future, their extremely abnormal nature makes it difficult to account for. | **62,370** |
+
+### Card Name Regularization
+
+Because our investigation is going to be focusing on
+NLP to generate prices, we need to make sure that this
+data contains consistent information. One strategy for
+doing this that's employed by most Magic applications
+is to replace the name of a card with CARDNAME whenever
+it appears in its own text.
+
+For example, Skyclave Apparition has an ability that
+says:
+
+> When Skyclave Apparition enters the battlefield...
+
+Abilities like this are common in Magic, but in order
+for us to be able to reliably catch that, we would need
+to have each card's name treated the same way, since no
+other cards reference Skyclave Apparition in their
+abilities. For example, we would translate this card's
+ability to start with:
+
+> When CARDNAME enters the battlefield
+
+### Pricing Visualization
+
+While not, strictly speaking, a part of the preparation
+process, it is important to understand just how
+different pricing data can be between cards. Some cards
+can fluctuate wildly in price, changing by several
+dollars in just a few days. Some may keep a constant
+price for years on end. Some cards can be orth hundreds
+of dollars and some cards can barely be worth pennies.
+
+This fluctuation is what we're trying to capture in the
+upcoming steps.
+
+![Trend plots showing several different card prices and their fluctuations over a 90-day period](./img/pricing_trends.png)
+
+![The cards that were used for the trend graphs in the previous image](./img/trend_cards.png)
 
 <!-- MODELING -->
 <!-- Demonstrate an iterative approach -->
 <!--   +Run/interprate a dummy model -->
-<!--   -Introduce new models that improve -->
+<!--   +Introduce new models that improve -->
 <!--   -Explicitly justify model change w/
         results and context -->
 <!--    -Explicitly describe improvements -->

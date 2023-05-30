@@ -310,26 +310,350 @@ upcoming steps.
 
 ![The cards that were used for the trend graphs in the previous image](./img/trend_cards.png)
 
-<!-- MODELING -->
-<!-- Demonstrate an iterative approach -->
-<!--   +Run/interprate a dummy model -->
-<!--   +Introduce new models that improve -->
-<!--   -Explicitly justify model change w/
-        results and context -->
-<!--    -Explicitly describe improvements -->
+## Model Preparation
 
-<!-- EVALUATION -->
-<!-- +Show how well a model solves the problem -->
-<!--    +Justify choice of metrics and 
-        consequences -->
-<!--    +Identify final model using those
-        metrics -->
-<!--    Discuss the implications -->
+With our data cleaned and pre-processed, we need to
+convert it from generally human-readable data into data
+that can be interpreted by a learning model.
 
-<!-- CONCLUSIONS -->
-<!--  -->
+### Processing Abilities
 
-<!-- GITHUB REPO -->
-<!--    Conclusion summarizes implications -->
+The data provided from Scryfall has our abilities as
+text, which is great for readability - but our model
+needs this data to be vectorized for it to be usable.
 
-<!-- +CODE QUALITY - NOT PART OF README -->
+Additionally, our cards can have multiple abilities.
+These abilities are denoted by `\n` in the text, which
+means that we are able to actually split from a single
+line of text into several abilities. Once we do that,
+we can then split from our list of abilities into our
+fully vectorized data. This will effectively take our
+abilities, turn them into chunks of data, and then for
+each card in our data it will assign it as either
+having that phrase or not having that phrase.
+Additionally, when we have our abilities split out we
+can assign each card a value of how many abilities it
+has.
+
+### Additional Vectorization
+
+While our abilities make up the largest portion of our
+vectorized data, we also need to vectorize a few other
+pieces of data.
+
+- Color Identity
+  - This can be have 6 total items, with many cards
+  having multiple values.
+
+- Power, Toughness, and Loyalty
+  - While these are all understandable as numbers,
+  there are special values in each of them that can't
+  be treated as numbers in our data set.
+  - Additionally, it's important to note that our model
+  won't be able to interpret "None" as an integer, and
+  we can't convert it into a 0 because there are cards
+  that have 0 as a value, but cards with None as a
+  value outright don't have a power, toughness, or
+  loyalty.
+
+## Data Subsetting
+
+Foil and non-foil prices can vary wildly for each card.
+As well, there are many cards that may have foil prices
+but not non-foil prices - like many promos - and the
+same is true for the other way around - like cards that
+are older than the foiling process.
+
+This means that we'll actually have 2 different models
+predicting the foil and non-foil prices.
+
+## Modeling
+
+### Creating the Dummy Model
+
+To get a solid baseline, we need to create a dummy
+model that will show a no-effort approach to prediction
+so that we can see if our efforts are actually making
+any kind of reasonable progress. To do this, we'll just
+take the median price of cards across each of our data
+subsets and use those to predict the value of any given
+card.
+
+We'll be using root mean squared error as a means of
+measuring the effectiveness of our predictions. This
+will show us the average distance that are predictions
+are from the true values.
+
+| Subset | Prediction | RMSE  |
+| ---:   | :---:      | :---: |
+| Normal | $0.90      | 91.61 |
+| Foil   | $0.22      | 47.28 |
+
+Unsurprisingly, guessing a middle value arbitrarily for
+every single card blindly isn't very effectual.
+
+As long as we're able to beat these values, we can show
+that we've made progress in the right direction.
+
+### Model Methodology, Testing, and Selection
+
+There are several pieces that need to be brought
+together in order to approach a final model.
+
+#### Methodology
+
+There are several types of models that could be usable
+for what we're trying to do. We'll highlight here what
+each of these models are good at in relation to what we
+want to accomplish and also provide some reasons we may
+want to look at a different model type.
+
+| Modeling Method | Pros. | Cons. |
+| ---:            | ---   | ---   |
+| Elastic Net | Good at handling multicolinearity and feature selection | Bad with high dimensionality |
+| Random Forest | Can account for many features | Tendency to overfit |
+| Gradient Boost | Highly flexible | Requires a lot of tuning |
+
+When creating these models, there is one important
+thing hasn't really been addressed so far. Imbalance.
+There are many cards that are worth under a dollar, as
+evidenced by the median price for both sets being 90
+and 22 cents. For our scoring process, we'll create,
+test, and operate with a model that was trained on
+logged data and one that was trained on raw data to see
+how each of these models performs.
+
+#### Testing
+
+A grid search across each of these models that takes
+RMSE into account has shown that the best model type
+for each of our subsets is a random forest model,
+except for the un-logged foil model, which shows that a
+gradient boost regressor is actually performing the
+best. It's possible that this would be something worth
+investigating further with better parameter selection
+and more aggressive and specific tuning, but for now
+we'll put that aside for a next step, possibly an
+immediate next step.
+
+Let's take a look at how some of our models and
+predictions turned out.
+
+|Finish |Is Log?        |RMSE |CV RMSE |Max Estimate|Min Estimate|
+|---:|---:|---|---|---|---|
+|Normal|No|78.33|74.13|$1,226.64|$0.02|
+|Foil|No|34.55|39.76|$1,878.53|$-3.64|
+|Normal|Yes|1.04|0.99|$450.39|$0.02|
+|Foil|Yes|1.00|1.13|$163.73|$0.04|
+
+Something that we can see from this visual is that our
+prices that aren't logged can predict higher values by
+far, but our foil prices are also coming through with
+some negative values. Let's take a look at how many of
+our predictions are negative. This is important because
+there shouldn't be ANY negative values.
+
+A quick count of our data shows that almost **TEN**
+percent of our predictions on our foil data are coming
+out negative. Again, there shouldn't be ANY negative
+prices.
+
+#### Model Visualizing
+
+Despite negative predictions, we'll go ahead and look
+at the predictions and how they stack up for all four
+of the subsets, pairing the logged and non-logged sets
+for each of the finishes.
+
+![Two graphs and tables with data comparing true and predicted prices](./img/predicted_pricing_samples.png)
+
+#### Model Selection
+
+As it stands, our models are out-performing the Dummy
+models in most areas. Though the Dummy model captures
+the foil prices just a little bit better when we're
+looking at it's ability to predict within $1 of a
+card's actual value, capturing about 2% more than our
+logged model and almost 40% more than our un-logged
+model. Our non-foil dummy model also performs slightly
+better than our un-logged normal model at the $1 range
+but is quickly surpassed at ather ranges.
+
+Additionally, our dummy model has the worst root mean
+squared error scores for all categories.
+
+While our results aren't incredibly close on our
+training data across the board, we are seeing the model
+pick up on some features. Our logged models seem to
+have the best results, so we'll use that as our final
+model.
+
+Let's go ahead and run the same visualization on our
+testing data to see how the model is working on
+completely unseen inputs.
+
+![Two graphs and tables with data comparing true and predicted prices on testing data](./img/predicted_pricing_testing_data.png)
+
+Let's also look at how many cards are being estimated
+within 1, 2, 3, and so on dollars, up to $10. While
+this isn't quite a standard metric, being able to
+estimate values closely is an important process of our
+model.
+
+![Histogram showing counts of prediction differences](./img/differentials_histogram.png)
+
+## Conclusions
+
+As it stands, our model is doing okay overall. A lot of
+predictions are within $1 of the actual prices. It
+looks like a big part of that is because of how many
+cards are low cost in the first place. The model is
+picking up on this and is sticking a lot of predictions
+on the low end - which isn't necessarily a bad thing.
+Having an estimate on the lower end of things is safer
+for people looking to invest in the cards, but low risk
+generally means low reward.
+
+In all cases, our RMSE score is showing some overfit,
+and since our selected model is a Random Forest
+Regressor, this is not very surprising.
+
+Currently, the model is probably at a state where it's
+helpful for gauging cards and prices that sit above
+what may be a lower-price card, but precise and
+accurate prices aren't really in the picture just yet.
+Even with that as a point, there are a decent number of
+predictions that are substantially higher than their
+actual prices, though this is a lot less common on the
+foil data set. This is likely due to the presence of
+things like the reserved list, which consists almost
+entirely of cards that aren't foil, a large chunk of
+which do very little as far as modern game standards
+are concerned, and even more are priced astronomically
+higher than even some of the best cards by today's
+standards.
+
+## Next Steps
+
+While this model doesn't quite meet the needs that were
+originally put forth, there seems to be a real,
+possible task to undertake.
+
+As mentioned at the very beginning of this project,
+there will be more updates as more information comes
+out, however infrequent they may be. With new sets
+coming out with relative frequency, the data will
+constantly be evolving.
+
+Below are some steps that are on the docket for model
+improvement in no particular order.
+
+- **Model Tweaking**
+  - The model is currently overfitting to our data to
+  some degree. There are a lot of different parameters
+  that could be searched across to potentially improve
+  upon this.
+  - This next step also applies greatly to the gradient
+  boosting functions and grid searches, as the
+  parameters for that are extremely extensive. There
+  may be a much better gradient boosting model
+  available than any random forest regressor, but it
+  will take a substantial amount of time to go through
+  that grid search process.
+
+- **Different Modeling Methods**
+  - This project primarily looked to try only a handful
+  of modeling methods. Elastic Net, Random Forest, and
+  Gradient Boosting. There exist other options that may
+  be worth looking into and might have impressive
+  results. Even using the same models but with
+  different parameters could produce some promising
+  data.
+
+- **Narrowed Scope**
+  - While many cards were left out and our scope was
+  reduced drastically, things like the reserved list,
+  the sheer amount of commons and uncommons that aren't
+  worth more than pennies, and cards with no abilities
+  may be playing an even more drastic role under the
+  hood than we can even begin to guess. Reducing our
+  training data to look more specifically at the data
+  that is outside of those sets may be worth a shot.
+
+- **Further Subsetting**
+  - Separating the cards out into foil and non-foil was
+  one of the most important parts of the training data
+  processing. It may be of use to take the cards down
+  even further based on different features like card
+  type if possible, though this may only lead to more
+  complexity for no reason.
+
+- **Accounting for Modal or Multi-Cards**
+  - There was an entire subset of cards that had to be
+  ignored in order for our processing to even function.
+  As new sets come out, these cards are going to only
+  become more abundant. Making an exception that takes
+  cards like this into consideration may be a vital
+  part of the process before too long.
+
+- **Create an Uploader/Importer**
+  - It's nice to see the data and how it's laid out
+  now, but it would be extremely useful to be able to
+  import new set data as it becomes available before
+  release to be able to more quickly gauge a set's
+  value. This may be something that can be put off
+  until the model itself is performing with much better
+  predictions, but it is still extremely important that
+  this is done at some point.
+
+## Other Versions
+
+For a more in-depth look at this project, there are two
+notebooks that include code processes and additional
+references. These notebooks are available
+[here](./1_Data_Prep.ipynb)
+and
+[here](./2_Modeling.ipynb).
+
+For an abbreviated form of this file as a presentation,
+you can find that
+[here](./Spell%20Trends%20Presentation.pdf).
+
+## For Inquiries, Business or Otherwise
+
+| Contact Type | Contact Info |
+|---:|:---|
+| GitHub | [github.com/ParkedHampster](github.com/ParkedHampster) |
+| eMail | [jd@jmentz.com](mailto:jd@jmentz.com) |
+
+## Repository Structure
+
+```bash
+Spell Trends
+├── 1_Data_Prep.ipynb
+├── 2_Modeling.ipynb
+├── _code
+│  ├── __init__.py
+│  ├── card_selection.py
+│  ├── cleaner.py
+│  └── viz.py
+├── data
+│  ├── AllPrices.json
+│  ├── AllPrintings.json
+│  ├── ScryfallData.json
+│  └── simplified_cards.parquet
+├── img
+│  ├── MTG_Primary_LL_2c_Black_LG_V12.png
+│  ├── pricing_trends.png
+│  ├── realm_cloaked_giant.jpeg
+│  ├── trend_cards.png
+│  └── who_what_when_where_why.jpeg
+├── LICENSE
+├── pickles
+│  ├── foil_gs.pkl
+│  ├── log_foil_gs.pkl
+│  ├── log_norm_gs.pkl
+│  └── norm_gs.pkl
+├── README.md
+└── Spell Trends Presentation.pdf
+```

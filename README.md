@@ -211,6 +211,32 @@ inclusion.
 
 ### Special Cases
 
+Because of how we're observing our data, there are a
+few things that were problems when bringing in
+everything.
+
+One prominent issue was the presence of multi-part
+cards.
+
+These cards generally have two separate ways to cast
+them. This can be something like *Realm-Cloaked Giant*,
+which can also be cast as *Cast Off*. In effect, this
+is two completely different cards, just on the same
+piece of cardboard.
+
+![Realm-Cloaked Giant from Magic: the Gathering - trademark Wizards of the Coast](./img/realm_cloaked_giant.jpeg)
+
+While this kind of card has become more common in the
+last few years, There are only about 1,050 of them
+total. There's an even more special case from one of
+the "UN"sets that appears in our data 5 times.
+
+While this card is excluded from our main data because
+it isn't representative of our data set at large, it is
+an interesting card to mention.
+
+![Who What When Where Why from Magic: the Gathering - trademark Wizards of the Coast](./img/who_what_when_where_why.jpeg)
+
 <!-- Throughout this project, the features being used will
 be adapted or changed over the project's course. As
 these features are added or removed, justification will

@@ -397,15 +397,110 @@ that we've made progress in the right direction.
 
 ### Model Methodology, Testing, and Selection
 
-a
+There are several pieces that need to be brought
+together in order to approach a final model.
 
-<!-- MODELING -->
-<!-- Demonstrate an iterative approach -->
-<!--   +Run/interpret a dummy model -->
-<!--   +Introduce new models that improve -->
-<!--   -Explicitly justify model change w/
-        results and context -->
-<!--    -Explicitly describe improvements -->
+#### Methodology
+
+There are several types of models that could be usable
+for what we're trying to do. We'll highlight here what
+each of these models are good at in relation to what we
+want to accomplish and also provide some reasons we may
+want to look at a different model type.
+
+| Modeling Method | Pros. | Cons. |
+| ---:            | ---   | ---   |
+| Elastic Net | Good at handling multicolinearity and feature selection | Bad with high dimensionality |
+| Random Forest | Can account for many features | Tendency to overfit |
+| Gradient Boost | Highly flexible | Requires a lot of tuning |
+
+When creating these models, there is one important
+thing hasn't really been addressed so far. Imbalance.
+There are many cards that are worth under a dollar, as
+evidenced by the median price for both sets being 90
+and 22 cents. For our scoring process, we'll create,
+test, and operate with a model that was trained on
+logged data and one that was trained on raw data to see
+how each of these models performs.
+
+#### Testing
+
+A grid search across each of these models that takes
+RMSE into account has shown that the best model type
+for each of our subsets is a random forest model,
+except for the un-logged foil model, which shows that a
+gradient boost regressor is actually performing the
+best. It's possible that this would be something worth
+investigating further with better parameter selection
+and more aggressive and specific tuning, but for now
+we'll put that aside for a next step, possibly an
+immediate next step.
+
+Let's take a look at how some of our models and
+predictions turned out.
+
+|Finish |Is Log?        |RMSE |CV RMSE |Max Estimate|Min Estimate|
+|---:|---:|---|---|---|---|
+|Normal|No|78.33|74.13|$1,226.64|$0.02|
+|Foil|No|34.55|39.76|$1,878.53|$-3.64|
+|Normal|Yes|1.04|0.99|$450.39|$0.02|
+|Foil|Yes|1.00|1.13|$163.73|$0.04|
+
+Something that we can see from this visual is that our
+prices that aren't logged can predict higher values by
+far, but our foil prices are also coming through with
+some negative values. Let's take a look at how many of
+our predictions are negative. This is important because
+there shouldn't be ANY negative values.
+
+A quick count of our data shows that almost **TEN**
+percent of our predictions on our foil data are coming
+out negative. Again, there shouldn't be ANY negative
+prices.
+
+#### Model Visualizing
+
+Despite negative predictions, we'll go ahead and look
+at the predictions and how they stack up for all four
+of the subsets, pairing the logged and non-logged sets
+for each of the finishes.
+
+![Two graphs and tables with data comparing true and predicted prices](./img/predicted_pricing_samples.png)
+
+#### Model Selection
+
+As it stands, our models are out-performing the Dummy
+models in most areas. Though the Dummy model captures
+the foil prices just a little bit better when we're
+looking at it's ability to predict within $1 of a
+card's actual value, capturing about 2% more than our
+logged model and almost 40% more than our un-logged
+model. Our non-foil dummy model also performs slightly
+better than our un-logged normal model at the $1 range
+but is quickly surpassed at ather ranges.
+
+Additionally, our dummy model has the worst root mean
+squared error scores for all categories.
+
+While our results aren't incredibly close on our
+training data across the board, we are seeing the model
+pick up on some features. Our logged models seem to
+have the best results, so we'll use that as our final
+model.
+
+Let's go ahead and run the same visualization on our
+testing data to see how the model is working on
+completely unseen inputs.
+
+![Two graphs and tables with data comparing true and predicted prices on testing data](./img/predicted_pricing_testing_data.png)
+
+Let's also look at how many cards are being estimated
+within 1, 2, 3, and so on dollars, up to $10. While
+this isn't quite a standard metric, being able to
+estimate values closely is an important process of our
+model.
+
+![Histogram showing counts of prediction differences](./img/differentials_histogram.png)
 
 ## Conclusions
 
@@ -458,6 +553,13 @@ improvement in no particular order.
   some degree. There are a lot of different parameters
   that could be searched across to potentially improve
   upon this.
+  - This next step also applies greatly to the gradient
+  boosting functions and grid searches, as the
+  parameters for that are extremely extensive. There
+  may be a much better gradient boosting model
+  available than any random forest regressor, but it
+  will take a substantial amount of time to go through
+  that grid search process.
 
 - **Different Modeling Methods**
   - This project primarily looked to try only a handful
@@ -519,7 +621,6 @@ Spell Trends
 ├── 2_Modeling.ipynb
 ├── _code
 │  ├── __init__.py
-│  ├── __pycache__
 │  ├── card_selection.py
 │  ├── cleaner.py
 │  └── viz.py

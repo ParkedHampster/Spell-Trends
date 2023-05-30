@@ -267,7 +267,8 @@ remaining in the data set after the step's completion.
 | **Only Cards With a Type** | Some cards in the data have no type listed. All legal, playable cards have card types. | 67,520 |
 | **No CMB1 or CMB2 Cards** | These are cards that were special, playtest cards that were released to the public and never meant to be played in any format. | 67,280 |
 | **No Multi-Cards** | As described before, these cards simply do not work without special processing. | 65,169 |
-| **Only Cards With Prices** | We are training a model to predict prices. Many of the cards that don't have prices are cards that simply haven't made a sale in months. These cards can be either do-nothing cards that are listed at $0.03 or are extremely powerful and unique cards listed at hundreds of thousands of dollars. This discrepancy makes it nigh impossible to impute this data. | **64,250** |
+| **Only Cards With Prices** | We are training a model to predict prices. Many of the cards that don't have prices are cards that simply haven't made a sale in months. These cards can be either do-nothing cards that are listed at $0.03 or are extremely powerful and unique cards listed at hundreds of thousands of dollars. This discrepancy makes it nigh impossible to impute this data. | 64,250 |
+| **Remove Low-Count "Sets"** | There are several sets that only contain a handful of cards because of the way promos used to be handled. While these cards may be worth looking at in the future, their extremely abnormal nature makes it difficult to account for. | **62,370** |
 
 ### Card Name Regularization
 
@@ -308,12 +309,6 @@ upcoming steps.
 ![Trend plots showing several different card prices and their fluctuations over a 90-day period](./img/pricing_trends.png)
 
 ![The cards that were used for the trend graphs in the previous image](./img/trend_cards.png)
-
-<!-- Throughout this project, the features being used will
-be adapted or changed over the project's course. As
-these features are added or removed, justification will
-be provided either before the relevant code block or
-within it. -->
 
 <!-- DATA UNDERSTANDING -->
 <!-- +Describe source and properties + why they're useful -->

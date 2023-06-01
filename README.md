@@ -25,6 +25,16 @@ and clean the data frome the aforementioned sources.
 contains all of the steps for creating and utilizing
 a few different types of models.
 
+A helpful setup script is available
+[here](./environment_setup.sh)
+to download all current versions of the data used in
+this project as well as create the environment the
+notebooks were run in. Currently, this setup script
+will overwrite any downloaded files. Additionally,
+these files take up over 3GB of space and it is advised
+not to download them if you are not running this entire
+project yourself.
+
 While the original data sources are too large to be
 uploaded to GitHub, a cleaned version of the data is
 available in the data folder which is used in the

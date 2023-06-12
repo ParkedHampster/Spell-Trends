@@ -172,4 +172,4 @@ data/*.json
 .ignore
 
 # rolling data to ignore
-rolling_data
+rolling_data/*.json

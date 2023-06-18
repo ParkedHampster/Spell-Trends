@@ -170,3 +170,6 @@ data/*.json
 
 # manually ignored files - for processing backup
 .ignore
+
+# rolling data to ignore
+rolling_data/*.json

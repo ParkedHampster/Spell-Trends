@@ -44,6 +44,14 @@ Because of the extensive and time-consuming nature of
 the modeling process, all models produced by the
 original data are also provided in the pickles folder.
 
+Additionally, as more models are run and investigated
+through the
+[Continuation Notebook](./3_Continued_Development.ipynb),
+they will be saved off in the pickles folder as well.
+These updates and changes will not be reflected
+immediately in this notebook overview but are available
+for investigation in the aforementioned notebook.
+
 ## Project Scope and Opportunity Potential
 
 This project will be ongoing as new data becomes
